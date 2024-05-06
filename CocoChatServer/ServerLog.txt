@@ -1,0 +1,13 @@
+Server Iniciado
+Cliente: Daniel Conectado
+Cliente: Fernando Conectado
+Fernando:'penepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenev' To:Daniel
+Daniel:'penepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepenepene' To:Fernando
+Fernando:'semen' To:Fernando
+Fernando:'vagina' To:Daniel
+Cliente: Cesar Conectado
+CocoChat1-Cesar: quiero morirme
+Server Iniciado
+Cliente: Test1 Conectado
+Cliente: Test2 Conectado
+Test1:'Prueba' To:Test2
