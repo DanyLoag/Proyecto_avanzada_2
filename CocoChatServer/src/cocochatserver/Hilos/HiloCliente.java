@@ -85,6 +85,9 @@ public class HiloCliente extends Observable implements Runnable {
         {
             OS.writeInt(Message.Option);
             switch(Message.Option){
+                case -1:
+                    OS.writeInt(Message.Addressee);
+                    break;
                 case 0:
                     System.out.println("Usuario "+Message.Content.get(0)+" Desconectado");
                     end();

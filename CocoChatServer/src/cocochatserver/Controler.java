@@ -59,6 +59,13 @@ public class Controler extends Observable implements Observer,Runnable{
             case 0 ->{
                 this.UpdateTXT("Usuario "+MSG.Content.get(0)+"-Desconectado");
                 UserClient.get(MSG.Addressee).SendMSG(MSG);
+                UserClient.remove(MSG.Addressee);
+                IdUser.remove(MSG.Addressee);
+                MSG.Option=-1;
+                for(HiloCliente Client:this.UserClient.values()){
+                    Client.SendMSG(MSG);
+                }
+                
             }
             case 1 ->{
             DmModel Dmesage=new DmModel(MSG.Origin,MSG.Addressee,MSG.Content.get(0));
@@ -107,16 +114,28 @@ public class Controler extends Observable implements Observer,Runnable{
                 DataInputStream IS=new DataInputStream(sc.getInputStream());
                 DataOutputStream OS=new DataOutputStream(sc.getOutputStream());
                 OS.writeUTF("Dame Tu id");
-                
-                
                 int IdUser=IS.readInt();
                 UserModel USER=this.User.GetUser(IdUser);
-                this.setChanged();
-                this.notifyObservers("Cliente: "+USER.Nombre+" Conectado");
-                this.clearChanged();   
                 HiloCliente Cliente=new HiloCliente(IS,OS,USER);
                 Cliente.addObserver(this);
                 this.addUser(USER.ID, Cliente);
+                ArrayList<UserModel> Users=User.GetUsers();
+                OS.writeInt(Users.size());
+                for(UserModel User: Users){
+                    if(User.ID!=IdUser){
+                        OS.writeInt(User.ID);
+                        OS.writeUTF(User.Nombre);
+                        if(this.IdUser.containsKey(User.ID)){
+                            OS.writeBoolean(true);
+                        }else{
+                            OS.writeBoolean(false);
+                        }
+                    }
+                }
+                this.setChanged();
+                this.notifyObservers("Cliente: "+USER.Nombre+" Conectado");
+                this.clearChanged();   
+                
                 Thread MT= new Thread(Cliente);
                 MT.start();
             }}catch (IOException ex)

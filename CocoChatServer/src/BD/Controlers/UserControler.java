@@ -33,12 +33,11 @@ public class UserControler extends Conection{
             ps.setInt(1, ID);
             rs = ps.executeQuery();
             rs.next();
-            
             User.ID=rs.getInt("ID_Perfil");
             User.Nombre=rs.getString("Nombre");
             User.Apem=rs.getString("APEM");
             User.Apep=rs.getString("APEP");
-            User.Mail=rs.getString("Mail");;
+            User.Mail=rs.getString("Mail");
             return User;
         } catch (SQLException ex)
         {
@@ -48,4 +47,29 @@ public class UserControler extends Conection{
         return User;
     }
     
+    public ArrayList<UserModel> GetUsers(){
+        ArrayList<UserModel> Users = new ArrayList<UserModel>();
+        PreparedStatement ps;
+        ResultSet rs;
+        try
+        {
+            ps=getCon().prepareStatement("Select * From perfil");
+            rs=ps.executeQuery();
+            while(rs.next()){
+                UserModel User=new UserModel();
+                User.ID=rs.getInt("ID_Perfil");
+                User.Nombre=rs.getString("Nombre");
+                User.Apem=rs.getString("APEM");
+                User.Apep=rs.getString("APEP");
+                User.Mail=rs.getString("Mail");
+                Users.add(User);
+            }
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(UserControler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        return Users;
+    }
 }

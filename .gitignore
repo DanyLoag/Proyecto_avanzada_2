@@ -1,1 +1,6 @@
 /CocoChatClient/build/
+/CocoChatServer/build/
+/CocoChatServer/dist/
+/CocoChatServer/nbproject/private/
+/CocoChatClient/nbproject/private/
+/CocoChatClient/dist/

@@ -24,7 +24,7 @@ public class CocoChatServer {
      */
     public static void main(String[] args) {
         
-         Terminal Terminal=new Terminal();
+        Terminal Terminal=new Terminal();
         Terminal.setVisible(true);
        /* try
         {

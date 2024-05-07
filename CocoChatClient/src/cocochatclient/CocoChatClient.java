@@ -5,10 +5,13 @@
 package cocochatclient;
 
 import Hilos.HiloServidor;
+import Models.Users;
+import Ventanas.PrincipalVentana;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,17 +29,32 @@ public class CocoChatClient {
         // TODO code application logic here
             Scanner sn=new Scanner (System.in);  
         try {
-            Socket sc = new Socket("192.168.137.1",5000);
+            Socket sc = new Socket("127.0.0.1",5000);
             DataInputStream in = new DataInputStream(sc.getInputStream());
             DataOutputStream out = new DataOutputStream(sc.getOutputStream());
+            
             String MSG=in.readUTF();
             System.out.println(MSG);
             int id=sn.nextInt();
             out.writeInt(id);
+            String Name;
+            boolean Online;
+            int SizeUsers;
+            ArrayList<Users> Users=new ArrayList<>();
+            SizeUsers=in.readInt()-1;
+            for(int i=0;i<SizeUsers;i++){
+                id=in.readInt();
+                Name=in.readUTF();
+                Online=in.readBoolean();
+                Users USR=new Users(id,Name,Online);
+                Users.add(USR);    
+            }
+            
             HiloServidor HiloServidor=new HiloServidor(in);
-            Thread TS=new Thread(HiloServidor);
-            TS.start();
-            outerLoop:while(true){
+            PrincipalVentana Ventana=new PrincipalVentana(in,out,Users,HiloServidor);
+            
+            Ventana.setVisible(true);           
+            /*outerLoop:while(true){
             System.out.print("Menu:\n[1]EnviarMensaje\n[2]Mensaje Grupo\n[0]Salir");
             int OP=sn.nextInt();
             out.writeInt(OP);
@@ -69,14 +87,7 @@ public class CocoChatClient {
                     System.out.println("Opcion no valida");
             }
               
-            }
-            HiloServidor.stop();
-                try {
-                    TS.join();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(CocoChatClient.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            System.out.print('A');
+            }*/
         } catch (IOException ex) {
             Logger.getLogger(CocoChatClient.class.getName()).log(Level.SEVERE, null, ex);
         }

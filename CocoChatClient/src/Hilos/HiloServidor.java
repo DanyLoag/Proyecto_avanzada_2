@@ -4,8 +4,10 @@
  */
 package Hilos;
 
+import cocochatclient.Message;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +16,7 @@ import java.util.logging.Logger;
  * @author usuario
  */
 
-public class HiloServidor implements Runnable{
+public class HiloServidor extends Observable implements Runnable{
     DataInputStream in;
     private volatile boolean Running; 
 
@@ -32,6 +34,14 @@ public class HiloServidor implements Runnable{
             try {
                 int Op=in.readInt();
                 switch(Op){
+                    case -1 ->{
+                        int User=in.readInt();
+                        Message MSG=new Message(Op,User);
+                        this.setChanged();
+                        this.notifyObservers(MSG);
+                        this.clearChanged();
+                        
+                    }
                     case 1 -> {
                         int User=in.readInt();
                         String MSG=in.readUTF();
@@ -53,8 +63,4 @@ public class HiloServidor implements Runnable{
         }
         System.out.println("Hilo Terminado");
     }
-    
-    
-    
-    
 }
