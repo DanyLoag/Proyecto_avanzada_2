@@ -51,8 +51,7 @@ public class CocoChatClient {
             }
             
             HiloServidor HiloServidor=new HiloServidor(in);
-            PrincipalVentana Ventana=new PrincipalVentana(in,out,Users,HiloServidor);
-            
+            PrincipalVentana Ventana=new PrincipalVentana(in,out,Users,HiloServidor);    
             Ventana.setVisible(true);           
             /*outerLoop:while(true){
             System.out.print("Menu:\n[1]EnviarMensaje\n[2]Mensaje Grupo\n[0]Salir");
@@ -88,9 +87,12 @@ public class CocoChatClient {
             }
               
             }*/
+        
         } catch (IOException ex) {
             Logger.getLogger(CocoChatClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        System.out.print("Hola");
     }
     
 }

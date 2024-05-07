@@ -46,6 +46,12 @@ public class ListaVentana extends JFrame {
             }
             ListUsers.addItem(UserState);
         }
+        BUsers.addActionListener(e->{
+            int CurrentIndex=this.ListUsers.getSelectedIndex();
+            Users UserChat=Users.get(CurrentIndex);
+            ChatDVenatana Chat=new ChatDVenatana(UserChat);
+            Chat.setVisible(true);
+        });
         GroupLayout orden = new GroupLayout(this.getContentPane());
         orden.setHorizontalGroup
         (
@@ -124,7 +130,7 @@ public class ListaVentana extends JFrame {
         }else{
             NewField+="-Offline";
         }
-        this.ListUsers.remove(IndexUser);
+        this.ListUsers.removeItemAt(IndexUser);
         this.ListUsers.insertItemAt(NewField, IndexUser);
         this.ListUsers.revalidate();
         this.ListUsers.repaint();

@@ -53,6 +53,7 @@ public class PrincipalVentana  extends JFrame implements Observer {
             {
                 Out.writeInt(0);
                 dispose();
+                System.exit(0);
             } catch (IOException ex)
             {
                 Logger.getLogger(PrincipalVentana.class.getName()).log(Level.SEVERE, null, ex);
@@ -113,7 +114,10 @@ public class PrincipalVentana  extends JFrame implements Observer {
     Message MSG  = (Message) arg;
     int OP=MSG.Option;
     switch(OP){
-        case -1 ->{
+        case -2 ->{
+            this.LS.UpdateUsers(MSG.Origin, true);
+        }
+        case -1 ->{   
             this.LS.UpdateUsers(MSG.Origin, false);
         }
         

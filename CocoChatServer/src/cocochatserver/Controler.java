@@ -132,6 +132,12 @@ public class Controler extends Observable implements Observer,Runnable{
                         }
                     }
                 }
+                for(HiloCliente Client:this.UserClient.values()){
+                    if(Client.User.ID!=IdUser){
+                    Message msg=new Message(-2,IdUser,IdUser);
+                    Client.SendMSG(msg);
+                    }
+                }
                 this.setChanged();
                 this.notifyObservers("Cliente: "+USER.Nombre+" Conectado");
                 this.clearChanged();   

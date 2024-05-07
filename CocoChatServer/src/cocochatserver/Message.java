@@ -22,4 +22,11 @@ public class Message {
         this.Addressee= Adresee;
         this.Origin=Origin;
     }
+
+    public Message(int Option, int Origin, int Addressee) {
+        this.Option = Option;
+        this.Origin = Origin;
+        this.Addressee = Addressee;
+    }
+    
 }

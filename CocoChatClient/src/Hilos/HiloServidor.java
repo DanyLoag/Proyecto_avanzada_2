@@ -34,6 +34,13 @@ public class HiloServidor extends Observable implements Runnable{
             try {
                 int Op=in.readInt();
                 switch(Op){
+                    case -2 ->{
+                        int User=in.readInt();
+                        Message MSG=new Message(Op,User);
+                        this.setChanged();
+                        this.notifyObservers(MSG);
+                        this.clearChanged();
+                    }
                     case -1 ->{
                         int User=in.readInt();
                         Message MSG=new Message(Op,User);

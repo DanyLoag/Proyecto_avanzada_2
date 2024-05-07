@@ -41,7 +41,8 @@ public class Terminal  extends JFrame implements Observer{
         JPanel contentPane = new JPanel();
         contentPane.setBackground(new Color(0x123456));
         setContentPane(contentPane);
-        Log.setPreferredSize(new Dimension(500,250));
+        
+        Log.setPreferredSize(new Dimension(500,400));
         Log.setBackground(Color.DARK_GRAY);
         Log.setForeground(new Color(0x99FFCC));
         Pane.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -66,7 +67,7 @@ public class Terminal  extends JFrame implements Observer{
         (
         orden.createSequentialGroup()
                 .addComponent(Pane)
-                .addGap(200)
+                .addGap(100)
                 .addComponent(Boton1)
                 .addComponent(Boton2)
         );

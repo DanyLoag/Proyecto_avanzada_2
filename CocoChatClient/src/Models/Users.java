@@ -11,12 +11,22 @@ package Models;
 public class Users {
     int id;
     String Name;
+    String Chat;
     boolean Online;
 
     public Users(int id, String Name, boolean Online) {
         this.id = id;
         this.Name = Name;
         this.Online = Online;
+        this.Chat="";
+    }
+
+    public void setChat(String Chat) {
+        this.Chat = Chat;
+    }
+    
+    public void AddMessage(String Message){
+        this.Chat+=Message+"\n";
     }
 
     public int getId() {

@@ -85,6 +85,9 @@ public class HiloCliente extends Observable implements Runnable {
         {
             OS.writeInt(Message.Option);
             switch(Message.Option){
+                case -2:
+                    OS.writeInt(Message.Origin);
+                    break;
                 case -1:
                     OS.writeInt(Message.Addressee);
                     break;
