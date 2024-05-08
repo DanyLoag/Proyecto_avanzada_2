@@ -13,10 +13,19 @@ import java.util.ArrayList;
 public class Message {
 
     public int Option;
-    public ArrayList<String> Content=new ArrayList<>();
+    public String Content;
     public int Origin;
     public Message(int Option,int Origin) {
         this.Option = Option;
         this.Origin=Origin;
     }
+
+    public Message(int Option, String Content, int Origin) {
+        this.Option = Option;
+        this.Content = Content;
+        this.Origin = Origin;
+    }
+    
+    
+    
 }

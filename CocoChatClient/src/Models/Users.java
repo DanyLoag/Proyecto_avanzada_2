@@ -13,17 +13,25 @@ public class Users {
     String Name;
     String Chat;
     boolean Online;
-
-    public Users(int id, String Name, boolean Online) {
+    boolean friend;
+    
+    public Users(int id, String Name, boolean Online,boolean friend) {
         this.id = id;
         this.Name = Name;
         this.Online = Online;
         this.Chat="";
+        this.friend=friend;
     }
 
     public void setChat(String Chat) {
         this.Chat = Chat;
     }
+
+    public void setOnline(boolean Online) {
+        this.Online = Online;
+    }
+    
+    
     
     public void AddMessage(String Message){
         this.Chat+=Message+"\n";
@@ -39,9 +47,10 @@ public class Users {
 
     public boolean isOnline() {
         return Online;
+    }  
+
+    public boolean isFriend() {
+        return friend;
     }
-    
-    
-    
     
 }

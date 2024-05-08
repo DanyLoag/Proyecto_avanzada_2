@@ -5,6 +5,7 @@
 package cocochatserver;
 
 import BD.Controlers.DmControler;
+import BD.Controlers.FriendsControler;
 import BD.Controlers.GroupControlers;
 import BD.Controlers.UserControler;
 import BD.Models.*;
@@ -32,9 +33,11 @@ public class Controler extends Observable implements Observer,Runnable{
     UserControler User;
     DmControler DmControler;
     GroupControlers GPC;
+    FriendsControler FC;
     
     public Controler(Terminal T) {
     GPC=new GroupControlers();
+    this.FC=new FriendsControler();
     this.addObserver(T);
     this.User=new UserControler();
     this.DmControler=new DmControler();
@@ -69,7 +72,12 @@ public class Controler extends Observable implements Observer,Runnable{
             }
             case 1 ->{
             DmModel Dmesage=new DmModel(MSG.Origin,MSG.Addressee,MSG.Content.get(0));
-            this.DmControler.InsertMSG(Dmesage);
+            if(FC.GetFrienShip(MSG.Addressee, MSG.Origin)){
+               this.DmControler.InsertMSG(Dmesage); 
+               if(!(UserClient.containsKey(MSG.Addressee))){
+                   return;
+               }
+            }
             this.UpdateTXT(IdUser.get(MSG.Origin).Nombre+":'"+MSG.Content.get(0)+"' To:"+IdUser.get(MSG.Addressee).Nombre);
             UserClient.get(MSG.Addressee).SendMSG(MSG);
             }
@@ -126,6 +134,11 @@ public class Controler extends Observable implements Observer,Runnable{
                         OS.writeInt(User.ID);
                         OS.writeUTF(User.Nombre);
                         if(this.IdUser.containsKey(User.ID)){
+                            OS.writeBoolean(true);
+                        }else{
+                            OS.writeBoolean(false);
+                        }
+                        if(this.FC.GetFrienShip(User.ID, IdUser)){
                             OS.writeBoolean(true);
                         }else{
                             OS.writeBoolean(false);

@@ -24,8 +24,6 @@ public class DmControler extends Conection{
         PreparedStatement ps;
          try {
         ps = getCon().prepareStatement("Insert into mensajes_directos (Remitente,Destinatario,Contenido,Fecha)values (?,?,?,?)");
-            int ID;
-            ID=(Dm.Origin)+(Dm.Adresser*10)+((int)Dm.Fecha.getTime());
             ps.setInt(1,Dm.Origin );
             ps.setInt(2, Dm.Adresser);
             ps.setString(3, Dm.Content);

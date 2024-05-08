@@ -53,6 +53,10 @@ public class HiloServidor extends Observable implements Runnable{
                         int User=in.readInt();
                         String MSG=in.readUTF();
                         System.out.println("\n"+User+": "+MSG);
+                        Message message=new Message(Op,MSG,User);
+                        this.setChanged();
+                        this.notifyObservers(message);
+                        this.clearChanged();
                     }
                     case 2->{
                         int Group=in.readInt();

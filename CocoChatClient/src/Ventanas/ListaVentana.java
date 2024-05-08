@@ -4,6 +4,7 @@
  */
 package Ventanas;
 
+import Hilos.HiloServidor;
 import Models.Users;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -25,32 +27,42 @@ public class ListaVentana extends JFrame {
     public JComboBox ListUsers=new JComboBox();
     public JComboBox ListFriends=new JComboBox();
     public JComboBox ListGroups=new JComboBox();
+    public HiloServidor HiloServer;
     private JButton BUsers=new JButton("Abrir Chat");
     private JButton BFriends=new JButton("Abrir Chat");
     private JButton BGroups=new JButton("Abrir Chat");
     private JLabel Label=new JLabel("Chats");;
-    private DataInputStream In;
     private DataOutputStream Out;
+    private int IdUser;
 
-    public ListaVentana(DataInputStream In, DataOutputStream Out, ArrayList<Users> Users) {
+    public ListaVentana(DataOutputStream Out, ArrayList<Users> Users,int IdUser, HiloServidor HiloServer) {
         super("Lista De Chats");
+        this.HiloServer=HiloServer;
+        this.IdUser=IdUser;
         this.Users=Users;
-        this.In = In;
         this.Out = Out;
         for(Users US:this.Users){
             String UserState=US.getName();
+            if(US.isFriend()){
+              ListFriends.addItem(UserState);
+            }
             if(US.isOnline()){
                 UserState+="-Online";
             }else{
                 UserState+="-Offline";
             }
             ListUsers.addItem(UserState);
+            
         }
         BUsers.addActionListener(e->{
             int CurrentIndex=this.ListUsers.getSelectedIndex();
             Users UserChat=Users.get(CurrentIndex);
-            ChatDVenatana Chat=new ChatDVenatana(UserChat);
+            if(UserChat.isFriend() || UserChat.isOnline()){
+            ChatDVenatana Chat=new ChatDVenatana(UserChat,this.Out,this.HiloServer);
             Chat.setVisible(true);
+            }else{
+                JOptionPane.showMessageDialog(null, "Este Usuario no esta conectado o no son amigos", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
         });
         GroupLayout orden = new GroupLayout(this.getContentPane());
         orden.setHorizontalGroup
@@ -126,10 +138,12 @@ public class ListaVentana extends JFrame {
         }
         String NewField=this.Users.get(IndexUser).getName();
         if(Op){
+            
             NewField+="-Online";
         }else{
             NewField+="-Offline";
         }
+        this.Users.get(IndexUser).setOnline(Op);
         this.ListUsers.removeItemAt(IndexUser);
         this.ListUsers.insertItemAt(NewField, IndexUser);
         this.ListUsers.revalidate();

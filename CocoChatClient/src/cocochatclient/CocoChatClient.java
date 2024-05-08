@@ -40,18 +40,20 @@ public class CocoChatClient {
             String Name;
             boolean Online;
             int SizeUsers;
+            boolean friend;
             ArrayList<Users> Users=new ArrayList<>();
             SizeUsers=in.readInt()-1;
             for(int i=0;i<SizeUsers;i++){
                 id=in.readInt();
                 Name=in.readUTF();
                 Online=in.readBoolean();
-                Users USR=new Users(id,Name,Online);
+                friend=in.readBoolean();
+                Users USR=new Users(id,Name,Online,friend);
                 Users.add(USR);    
             }
             
             HiloServidor HiloServidor=new HiloServidor(in);
-            PrincipalVentana Ventana=new PrincipalVentana(in,out,Users,HiloServidor);    
+            PrincipalVentana Ventana=new PrincipalVentana(in,out,Users,HiloServidor,id);    
             Ventana.setVisible(true);           
             /*outerLoop:while(true){
             System.out.print("Menu:\n[1]EnviarMensaje\n[2]Mensaje Grupo\n[0]Salir");

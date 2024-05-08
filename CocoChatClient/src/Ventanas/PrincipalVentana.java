@@ -30,16 +30,18 @@ public class PrincipalVentana  extends JFrame implements Observer {
     private JButton GruposAmistades=new JButton("Grupos/Amigos");
     private JLabel Label1=new JLabel("Coco-Chat");
     private JButton Salir=new JButton("Cerrar Sesion");
+    private int IdUser;
     private DataInputStream In;
     private DataOutputStream Out;
     public HiloServidor HiloServer;
     ArrayList<Users> Users;
     ListaVentana LS;
 
-    public PrincipalVentana(DataInputStream IN,DataOutputStream OUT,ArrayList<Users> User,HiloServidor HiloServidor) {
+    public PrincipalVentana(DataInputStream IN,DataOutputStream OUT,ArrayList<Users> User,HiloServidor HiloServidor, int IdUser) {
         super("Menu");
         this.HiloServer=HiloServidor;
         this.HiloServer.addObserver(this);
+        this.IdUser=IdUser;
         Thread TS=new Thread(this.HiloServer);
         TS.start();
         this.Users=User;
@@ -47,7 +49,7 @@ public class PrincipalVentana  extends JFrame implements Observer {
         this.Out=OUT;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         GroupLayout orden = new GroupLayout(this.getContentPane());
-        LS=new ListaVentana(In,Out,Users);
+        LS=new ListaVentana(Out,Users,this.IdUser,this.HiloServer);
         Salir.addActionListener(e->{
             try
             {
