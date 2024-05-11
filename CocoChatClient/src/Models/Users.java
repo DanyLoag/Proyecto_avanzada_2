@@ -52,5 +52,9 @@ public class Users {
     public boolean isFriend() {
         return friend;
     }
+
+    public String getChat() {
+        return Chat;
+    }
     
 }

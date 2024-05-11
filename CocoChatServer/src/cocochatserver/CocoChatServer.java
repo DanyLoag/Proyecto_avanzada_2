@@ -25,7 +25,7 @@ public class CocoChatServer {
     public static void main(String[] args) {
         
         Terminal Terminal=new Terminal();
-        Terminal.setVisible(true);
+        Terminal.setVisible(true);// iniciamos nuestra ventana de terminal e inicia nuestro programa 
        /* try
         {
             // TODO code application logic here

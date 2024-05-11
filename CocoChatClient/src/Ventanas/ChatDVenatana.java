@@ -39,6 +39,7 @@ public class ChatDVenatana extends JFrame implements Observer {
 
     public ChatDVenatana(Users User,DataOutputStream OutS,HiloServidor HiloServer) {
         super("Chat");
+        
         this.HiloServer=HiloServer;
         this.HiloServer.addObserver(this);
         this.Chat.setText("Chat con: "+User.getName());
@@ -47,7 +48,7 @@ public class ChatDVenatana extends JFrame implements Observer {
         Log.setPreferredSize(new Dimension(500,400));
         Log.setBackground(Color.DARK_GRAY);
         Log.setForeground(new Color(0x99FFCC));
-        
+        Log.append(User.getChat());
         enviar.addActionListener(e->{
             try
             {
@@ -100,7 +101,6 @@ public class ChatDVenatana extends JFrame implements Observer {
         int OP=MSG.Option;
         if(OP==1&&MSG.Origin==this.User.getId()){
             String Message=this.User.getName()+": "+MSG.Content;
-            this.User.AddMessage(Message);
             this.Log.append(Message+"\n");
         }
     }

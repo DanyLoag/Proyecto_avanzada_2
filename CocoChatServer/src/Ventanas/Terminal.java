@@ -34,6 +34,10 @@ public class Terminal  extends JFrame implements Observer{
     private JTextArea Log=new JTextArea();
     private JScrollPane Pane= new JScrollPane(Log);
     File Register;
+    
+    /**
+     * aqui todo normal iniciamos los componentes de nuestra view
+     */
     public Terminal() {
         super("Terminal");
         Register=new File("C:\\Users\\Jorge\\OneDrive\\Documents\\NetBeansProjects\\CocoChatServer\\ServerLog.txt");
@@ -73,18 +77,18 @@ public class Terminal  extends JFrame implements Observer{
         );
         setLayout(orden);
         this.pack();
-        Controler CTR=new Controler(this);
+        Controler CTR=new Controler(this);// aqui creamos nuestro hilo controler , este es el que se encarga de esuchar a los usuarios que se van conectando 
         Thread t = new Thread(CTR);
-        t.start();
+        t.start();// iniciamos el hilo y la ventana se abre 
     }
 
     @Override
     public void update(Observable o, Object arg) {
         String Text=(String) arg;
-        Log.append(Text+"\n");
+        Log.append(Text+"\n");// cuando el hilo controler llama el update se muesta el texto que mando en el registro 
     }
     
-    public void RecordLog(){
+    public void RecordLog(){// leemos todo el archivo de texto y le vamos poniendo cada linea al log 
         try
         {
             Scanner sc = new Scanner(this.Register);
@@ -97,7 +101,7 @@ public class Terminal  extends JFrame implements Observer{
         }
     }
     
-    public void SaveLog() {
+    public void SaveLog() {// abrimos nuestro archivo de texto y le ponemos el texto que contenga el log 
         FileWriter FLW;
         try
         {

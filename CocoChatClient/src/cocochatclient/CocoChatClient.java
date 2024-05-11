@@ -12,6 +12,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +43,7 @@ public class CocoChatClient {
             int SizeUsers;
             boolean friend;
             ArrayList<Users> Users=new ArrayList<>();
+            HashMap<Integer,Users> UserMap=new HashMap<>();
             SizeUsers=in.readInt()-1;
             for(int i=0;i<SizeUsers;i++){
                 id=in.readInt();
@@ -49,11 +51,12 @@ public class CocoChatClient {
                 Online=in.readBoolean();
                 friend=in.readBoolean();
                 Users USR=new Users(id,Name,Online,friend);
-                Users.add(USR);    
+                Users.add(USR);
+                UserMap.put(id, USR);
             }
             
             HiloServidor HiloServidor=new HiloServidor(in);
-            PrincipalVentana Ventana=new PrincipalVentana(in,out,Users,HiloServidor,id);    
+            PrincipalVentana Ventana=new PrincipalVentana(in,out,Users,HiloServidor,id,UserMap);    
             Ventana.setVisible(true);           
             /*outerLoop:while(true){
             System.out.print("Menu:\n[1]EnviarMensaje\n[2]Mensaje Grupo\n[0]Salir");

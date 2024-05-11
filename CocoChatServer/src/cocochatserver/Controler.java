@@ -28,13 +28,16 @@ import java.util.logging.Logger;
  * @author Jorge
  */
 public class Controler extends Observable implements Observer,Runnable{
-    HashMap<Integer, HiloCliente> UserClient = new HashMap<>();
-    HashMap<Integer,UserModel> IdUser=new HashMap<>();
+    HashMap<Integer, HiloCliente> UserClient = new HashMap<>();// aqui vamos a guardar los hilos de cada usuario , para que podamos tener a todos los usuarios que esten conectados 
+    HashMap<Integer,UserModel> IdUser=new HashMap<>();// aqui guardamos la informmacion de todos los usuarios conectados con un modelo de la base de datos 
     UserControler User;
     DmControler DmControler;
     GroupControlers GPC;
     FriendsControler FC;
-    
+    /**
+     * iniciamos nuestra clase , los controladores de la bd y agregamos que la terminal observe esta clase
+     * @param T enviamos la ventana de la terminal ya que esta clase sera observada por la terminal
+     */
     public Controler(Terminal T) {
     GPC=new GroupControlers();
     this.FC=new FriendsControler();
@@ -43,11 +46,20 @@ public class Controler extends Observable implements Observer,Runnable{
     this.DmControler=new DmControler();
     }
     
+    /**
+     * se agrega el usuario conectado a los hash map 
+     * @param Name id del usuario
+     * @param Client modelo del usuario
+     */
     public void addUser(int Name, HiloCliente Client){
         IdUser.put(Name, Client.User);
         UserClient.put(Name, Client);
     }
     
+    /**
+     * se notifica a la terminal de un nuevo mensaje 
+     * @param S mensaje que se va a mandar
+     */
     public void UpdateTXT(String S){
         this.setChanged();
         this.notifyObservers(S);
@@ -108,6 +120,10 @@ public class Controler extends Observable implements Observer,Runnable{
 
     @Override
     public void run() {
+        /**
+         * este es nuestro hilo que escucha a los usuarios que se van conectando 
+         * este siempre estara corriendo y viendo que algun usuario se conecte
+         */
              try
             {
             ServerSocket Server = new ServerSocket(5000);
@@ -116,20 +132,23 @@ public class Controler extends Observable implements Observer,Runnable{
             this.setChanged();
             this.notifyObservers("Server Iniciado");
             this.clearChanged();
-           //Controler Controler=new Controler();
+           //iniciamos nuestro server
             while(true){
-                sc=Server.accept();
+                sc=Server.accept();//esperamos a que algun usuario se conecte , una vez que alguno se conecta vamos inciiando la comunicacion con el 
                 DataInputStream IS=new DataInputStream(sc.getInputStream());
                 DataOutputStream OS=new DataOutputStream(sc.getOutputStream());
-                OS.writeUTF("Dame Tu id");
+                OS.writeUTF("Dame Tu id");// aqui le pedimos su id que seria su id en la bd 
                 int IdUser=IS.readInt();
-                UserModel USER=this.User.GetUser(IdUser);
-                HiloCliente Cliente=new HiloCliente(IS,OS,USER);
-                Cliente.addObserver(this);
-                this.addUser(USER.ID, Cliente);
-                ArrayList<UserModel> Users=User.GetUsers();
-                OS.writeInt(Users.size());
-                for(UserModel User: Users){
+                /**
+                 * TO DO @FER AQUI VA EL LOGIN 
+                 */
+                UserModel USER=this.User.GetUser(IdUser);// obtenemos el modelo del usuario
+                HiloCliente Cliente=new HiloCliente(IS,OS,USER); // le creamos un nuevo hilo al usuario, este hilo se encargara de enviar y recibir mensajes del usuario 
+                Cliente.addObserver(this);//nuestro hilo controler estara observando a todos los hilos con los usuarios , esto para mantener comunicacion entre los hilos
+                this.addUser(USER.ID, Cliente);//agregamos al usuario a los hashmap
+                ArrayList<UserModel> Users=User.GetUsers();// aqui obtnermos todos los usuarios conectados y no conectados y se los vamosmandando 
+                OS.writeInt(Users.size());//le digo cuantos usuarios hay 
+                for(UserModel User: Users){// envio toda la informacion de cada usuario 
                     if(User.ID!=IdUser){
                         OS.writeInt(User.ID);
                         OS.writeUTF(User.Nombre);
@@ -144,7 +163,7 @@ public class Controler extends Observable implements Observer,Runnable{
                             OS.writeBoolean(false);
                         }
                     }
-                }
+                }//le aviso a todos los usuarios conectados que se conecto un nuevo usuario 
                 for(HiloCliente Client:this.UserClient.values()){
                     if(Client.User.ID!=IdUser){
                     Message msg=new Message(-2,IdUser,IdUser);

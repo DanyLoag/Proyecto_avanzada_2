@@ -11,6 +11,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -35,10 +36,12 @@ public class PrincipalVentana  extends JFrame implements Observer {
     private DataOutputStream Out;
     public HiloServidor HiloServer;
     ArrayList<Users> Users;
+    HashMap<Integer,Users> UserMap;
     ListaVentana LS;
 
-    public PrincipalVentana(DataInputStream IN,DataOutputStream OUT,ArrayList<Users> User,HiloServidor HiloServidor, int IdUser) {
+    public PrincipalVentana(DataInputStream IN,DataOutputStream OUT,ArrayList<Users> User,HiloServidor HiloServidor, int IdUser,HashMap<Integer,Users> UserMap ) {
         super("Menu");
+        this.UserMap=UserMap;
         this.HiloServer=HiloServidor;
         this.HiloServer.addObserver(this);
         this.IdUser=IdUser;
@@ -121,6 +124,11 @@ public class PrincipalVentana  extends JFrame implements Observer {
         }
         case -1 ->{   
             this.LS.UpdateUsers(MSG.Origin, false);
+        }
+        case 1 ->{
+            Users tempUser=this.UserMap.get(MSG.Origin);
+            String fullmsg=tempUser.getName()+": "+MSG.Content;
+            tempUser.AddMessage(fullmsg);
         }
         
     }

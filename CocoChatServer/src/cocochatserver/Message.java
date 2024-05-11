@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Jorge
+ * Esta clase es usada para comunicar el hilo de cada cliente con el hilo controler , para que podamos empaquetar cada mensaje en un solo objeto
  */
-public class Message {
+public class Message {// esta clase nos sirve para comunicar mas facil entre todos los hilos, teniendo control de todo lo que necesitamos mandar
     
-        public int Option;
+    public int Option;
     public ArrayList<String> Content;
     public int Origin;
     public int Addressee;
