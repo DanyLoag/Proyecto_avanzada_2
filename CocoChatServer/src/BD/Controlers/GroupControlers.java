@@ -5,6 +5,7 @@
 package BD.Controlers;
 
 import BD.Conection;
+import BD.Models.Group;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.sql.ResultSet;
@@ -57,5 +58,28 @@ public class GroupControlers extends Conection {
         return Name;
     }
     
+    
+    public ArrayList<Group> GetGroups(int id){
+        ArrayList<Group> Groups = new ArrayList<Group>();
+        PreparedStatement ps;
+        ResultSet rs;
+        try
+        {
+            ps = getCon().prepareStatement("select ID, Usuario , Grupo,chat_grupal.Nombre,chat_grupal.Descripcion from grupos left JOIN chat_grupal ON chat_Grupal.ID_Grupo=Grupos.Grupo where usuario = (?)");
+            ps.setInt(1, id);
+            rs=ps.executeQuery();
+            while(rs.next()){
+                Group Group=new Group();
+                Group.setId(rs.getInt("Grupo"));
+                Group.setName(rs.getString("Nombre"));
+                Group.setDescription(rs.getString("Descripcion"));
+                Groups.add(Group);
+            }
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(GroupControlers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Groups;
+    }
     
 }

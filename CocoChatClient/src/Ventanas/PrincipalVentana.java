@@ -5,6 +5,8 @@
 package Ventanas;
 
 import Hilos.HiloServidor;
+import Models.Group;
+import Models.Invitaciones;
 import Models.Users;
 import cocochatclient.Message;
 import java.io.DataInputStream;
@@ -35,16 +37,21 @@ public class PrincipalVentana  extends JFrame implements Observer {
     private DataInputStream In;
     private DataOutputStream Out;
     public HiloServidor HiloServer;
-    ArrayList<Users> Users;
-    HashMap<Integer,Users> UserMap;
+    private ArrayList<Users> Users;
+    private HashMap<Integer,Users> UserMap;
+    ArrayList<Group> Groups;
+    HashMap<Integer,Group> IdGroups;
+    InvitacionesVentana IV;
     ListaVentana LS;
 
-    public PrincipalVentana(DataInputStream IN,DataOutputStream OUT,ArrayList<Users> User,HiloServidor HiloServidor, int IdUser,HashMap<Integer,Users> UserMap ) {
+    public PrincipalVentana(DataInputStream IN,DataOutputStream OUT,ArrayList<Users> User,HiloServidor HiloServidor, int IdUser,HashMap<Integer,Users> UserMap,ArrayList<Group> Groups,    HashMap<Integer,Group> IdGroups) {
         super("Menu");
         this.UserMap=UserMap;
         this.HiloServer=HiloServidor;
         this.HiloServer.addObserver(this);
         this.IdUser=IdUser;
+        this.Groups=Groups;
+        this.IdGroups=IdGroups;
         Thread TS=new Thread(this.HiloServer);
         TS.start();
         this.Users=User;
@@ -52,7 +59,9 @@ public class PrincipalVentana  extends JFrame implements Observer {
         this.Out=OUT;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         GroupLayout orden = new GroupLayout(this.getContentPane());
-        LS=new ListaVentana(Out,Users,this.IdUser,this.HiloServer);
+        LS=new ListaVentana(Out,Users,this.IdUser,this.HiloServer,this.UserMap,this.Groups,this.IdGroups);
+        ArrayList<Invitaciones> Invs=new ArrayList<Invitaciones>();
+        IV=new InvitacionesVentana(Invs,this.UserMap);
         Salir.addActionListener(e->{
             try
             {
@@ -68,6 +77,10 @@ public class PrincipalVentana  extends JFrame implements Observer {
         
         Lista.addActionListener(e->{
             LS.setVisible(true);
+        });
+        
+        GruposAmistades.addActionListener(e->{
+            IV.setVisible(true);
         });
         
         orden.setHorizontalGroup

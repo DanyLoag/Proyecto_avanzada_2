@@ -15,6 +15,14 @@ public class Message {
     public int Option;
     public String Content;
     public int Origin;
+    public int IdGroup;
+
+    public Message(int Option, String Content, int Origin, int IdGroup) {
+        this.Option = Option;
+        this.Content = Content;
+        this.Origin = Origin;
+        this.IdGroup = IdGroup;
+    }
     public Message(int Option,int Origin) {
         this.Option = Option;
         this.Origin=Origin;

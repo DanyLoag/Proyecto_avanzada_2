@@ -22,6 +22,8 @@ public class Users {
         this.Chat="";
         this.friend=friend;
     }
+    
+    
 
     public void setChat(String Chat) {
         this.Chat = Chat;

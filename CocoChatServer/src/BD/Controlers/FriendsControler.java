@@ -4,10 +4,12 @@
  */
 package BD.Controlers;
 
+
 import BD.Conection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +43,10 @@ public class FriendsControler extends Conection {
             Logger.getLogger(FriendsControler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return FriendShip;
+    }
+    
+    public ArrayList<FrienshipModel> getPendingFrienships(int id){
+        ArrayList<
     }
     
 }

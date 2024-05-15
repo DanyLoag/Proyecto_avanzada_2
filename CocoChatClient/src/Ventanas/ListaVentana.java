@@ -5,10 +5,13 @@
 package Ventanas;
 
 import Hilos.HiloServidor;
+import Models.Group;
+import Models.Item;
 import Models.Users;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -34,13 +37,17 @@ public class ListaVentana extends JFrame {
     private JLabel Label=new JLabel("Chats");;
     private DataOutputStream Out;
     private int IdUser;
+    private ArrayList<Group> Groups;
+    private HashMap<Integer,Group> IdGroups;
 
-    public ListaVentana(DataOutputStream Out, ArrayList<Users> Users,int IdUser, HiloServidor HiloServer) {
+    public ListaVentana(DataOutputStream Out, ArrayList<Users> Users,int IdUser, HiloServidor HiloServer,HashMap<Integer,Users> UserMap,ArrayList<Group> Groups, HashMap<Integer,Group> IdGroups) {
         super("Lista De Chats");
         this.HiloServer=HiloServer;
         this.IdUser=IdUser;
         this.Users=Users;
         this.Out = Out;
+        this.Groups=Groups;
+        this.IdGroups=IdGroups;
         for(Users US:this.Users){
             String UserState=US.getName();
             if(US.isFriend()){
@@ -51,9 +58,14 @@ public class ListaVentana extends JFrame {
             }else{
                 UserState+="-Offline";
             }
-            ListUsers.addItem(UserState);
-            
+            ListUsers.addItem(UserState);         
         }
+        
+        for(Group Group:this.IdGroups.values()){
+            Item Item=new Item(Group.getId(),Group.getName());
+            this.ListGroups.addItem(Item);
+        }
+        
         BUsers.addActionListener(e->{
             int CurrentIndex=this.ListUsers.getSelectedIndex();
             Users UserChat=Users.get(CurrentIndex);
@@ -64,6 +76,15 @@ public class ListaVentana extends JFrame {
                 JOptionPane.showMessageDialog(null, "Este Usuario no esta conectado o no son amigos", "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
         });
+        
+        BGroups.addActionListener(e->{
+            Item CurrentIndex=(Item) this.ListGroups.getSelectedItem();
+            Group CurrentGroup=this.IdGroups.get(CurrentIndex.getId());
+            ChatGrupalVentana CGV=new ChatGrupalVentana(CurrentGroup,this.Out,this.HiloServer);
+            CGV.setVisible(true);
+        });
+        
+        
         GroupLayout orden = new GroupLayout(this.getContentPane());
         orden.setHorizontalGroup
         (

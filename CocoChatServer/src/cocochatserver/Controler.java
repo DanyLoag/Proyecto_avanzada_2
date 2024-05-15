@@ -6,6 +6,7 @@ package cocochatserver;
 
 import BD.Controlers.DmControler;
 import BD.Controlers.FriendsControler;
+import BD.Controlers.GmControler;
 import BD.Controlers.GroupControlers;
 import BD.Controlers.UserControler;
 import BD.Models.*;
@@ -34,6 +35,7 @@ public class Controler extends Observable implements Observer,Runnable{
     DmControler DmControler;
     GroupControlers GPC;
     FriendsControler FC;
+    GmControler GMC;
     /**
      * iniciamos nuestra clase , los controladores de la bd y agregamos que la terminal observe esta clase
      * @param T enviamos la ventana de la terminal ya que esta clase sera observada por la terminal
@@ -44,6 +46,7 @@ public class Controler extends Observable implements Observer,Runnable{
     this.addObserver(T);
     this.User=new UserControler();
     this.DmControler=new DmControler();
+    this.GMC=new GmControler();
     }
     
     /**
@@ -98,6 +101,8 @@ public class Controler extends Observable implements Observer,Runnable{
                 ArrayList<Integer> ID=GPC.GetUsers(MSG.Origin, MSG.Addressee);
                 String ChatName=GPC.GetGroupName(MSG.Addressee);
                 this.UpdateTXT(ChatName+"-"+IdUser.get(MSG.Origin).Nombre+": "+MSG.Content.get(0));
+                DmModel Dmesage=new DmModel(MSG.Origin,MSG.Addressee,MSG.Content.get(0));
+                this.GMC.InsertMsg(Dmesage);
                 for(int i:ID){
                     if(UserClient.containsKey(i)){
                         UserClient.get(i).SendMSG(MSG);
@@ -140,7 +145,10 @@ public class Controler extends Observable implements Observer,Runnable{
                 OS.writeUTF("Dame Tu id");// aqui le pedimos su id que seria su id en la bd 
                 int IdUser=IS.readInt();
                 /**
-                 * TO DO @FER AQUI VA EL LOGIN 
+                 * TO DO @Fer aca va el login, register y preguntas de seguridad
+                 * en el register ademas tienes que tener en cuenta que le debe de avisar a todos los  
+                 * usuarios que hay un nuevo usuario en el sistema, igual eso lo podemos hacer hasta que 
+                 * acabes todo lo demas. 
                  */
                 UserModel USER=this.User.GetUser(IdUser);// obtenemos el modelo del usuario
                 HiloCliente Cliente=new HiloCliente(IS,OS,USER); // le creamos un nuevo hilo al usuario, este hilo se encargara de enviar y recibir mensajes del usuario 
@@ -151,19 +159,37 @@ public class Controler extends Observable implements Observer,Runnable{
                 for(UserModel User: Users){// envio toda la informacion de cada usuario 
                     if(User.ID!=IdUser){
                         OS.writeInt(User.ID);
-                        OS.writeUTF(User.Nombre);
-                        if(this.IdUser.containsKey(User.ID)){
-                            OS.writeBoolean(true);
-                        }else{
-                            OS.writeBoolean(false);
-                        }
+                        OS.writeUTF(User.Nombre);                        
+                        OS.writeBoolean(this.IdUser.containsKey(User.ID));
                         if(this.FC.GetFrienShip(User.ID, IdUser)){
                             OS.writeBoolean(true);
+                            ArrayList<String> Messages=DmControler.getMessages( IdUser,User.ID);
+                            OS.writeInt(Messages.size());
+                            for(String MS:Messages){
+                                OS.writeUTF(MS);
+                            }
                         }else{
                             OS.writeBoolean(false);
                         }
                     }
                 }//le aviso a todos los usuarios conectados que se conecto un nuevo usuario 
+                ArrayList<Group> Groups=GPC.GetGroups(IdUser);
+                OS.writeInt(Groups.size());
+                for(Group Group:Groups){
+                    OS.writeInt(Group.getId());
+                    OS.writeUTF(Group.getName());
+                    OS.writeUTF(Group.getDescription());                 
+                    ArrayList<Integer> Ids = GPC.GetUsers(IdUser, Group.getId());
+                    OS.writeInt(Ids.size());
+                    for(Integer id: Ids){
+                        OS.writeInt(id);
+                    }
+                    ArrayList<String> Messages=this.GMC.getMsg(IdUser, Group.getId());
+                    OS.writeInt(Messages.size());
+                    for(String MS:Messages){
+                        OS.writeUTF(MS);
+                    }
+                }
                 for(HiloCliente Client:this.UserClient.values()){
                     if(Client.User.ID!=IdUser){
                     Message msg=new Message(-2,IdUser,IdUser);
@@ -174,7 +200,7 @@ public class Controler extends Observable implements Observer,Runnable{
                 this.notifyObservers("Cliente: "+USER.Nombre+" Conectado");
                 this.clearChanged();   
                 
-                Thread MT= new Thread(Cliente);
+                Thread MT= new Thread(Cliente);//inicia el hilo que esta escuchando al cliente nuevo
                 MT.start();
             }}catch (IOException ex)
         {

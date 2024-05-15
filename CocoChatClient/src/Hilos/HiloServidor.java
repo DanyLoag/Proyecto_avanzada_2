@@ -63,6 +63,10 @@ public class HiloServidor extends Observable implements Runnable{
                         int User=in.readInt();
                         String MSG=in.readUTF();
                         System.out.println("Group("+Group+")-"+User+": "+MSG);
+                        Message message=new Message(Op,MSG,User,Group);
+                        this.setChanged();
+                        this.notifyObservers(message);
+                        this.clearChanged();
                     }
                     case 0 -> {
                         this.Running=false;
