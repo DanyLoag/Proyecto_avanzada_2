@@ -22,6 +22,10 @@ public class Users {
         this.Chat="";
         this.friend=friend;
     }
+
+    public void setFriend(boolean friend) {
+        this.friend = friend;
+    }
     
     
 

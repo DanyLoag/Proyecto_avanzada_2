@@ -10,13 +10,30 @@ package BD.Models;
  */
 public class FrienshipModel {
     int id;
+    int user1;
     int user2;
     boolean accept;
 
-    public FrienshipModel(int id, int user2, boolean accept) {
+    public FrienshipModel(int id, int user1, boolean accept) {
         this.id = id;
-        this.user2 = user2;
+        this.user1 = user1;
         this.accept = accept;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getUser1() {
+        return user1;
+    }
+
+    public int getUser2() {
+        return user2;
+    }
+
+    public boolean isAccept() {
+        return accept;
     }
     
 }

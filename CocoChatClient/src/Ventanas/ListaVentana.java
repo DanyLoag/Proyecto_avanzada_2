@@ -39,9 +39,11 @@ public class ListaVentana extends JFrame {
     private int IdUser;
     private ArrayList<Group> Groups;
     private HashMap<Integer,Group> IdGroups;
+    private HashMap<Integer,Users> UserMap;
 
     public ListaVentana(DataOutputStream Out, ArrayList<Users> Users,int IdUser, HiloServidor HiloServer,HashMap<Integer,Users> UserMap,ArrayList<Group> Groups, HashMap<Integer,Group> IdGroups) {
         super("Lista De Chats");
+        this.UserMap=UserMap;
         this.HiloServer=HiloServer;
         this.IdUser=IdUser;
         this.Users=Users;
@@ -49,16 +51,17 @@ public class ListaVentana extends JFrame {
         this.Groups=Groups;
         this.IdGroups=IdGroups;
         for(Users US:this.Users){
-            String UserState=US.getName();
+            Item item=new Item(US.getId(),US.getName());
             if(US.isFriend()){
-              ListFriends.addItem(UserState);
+              Item item2=new Item(US.getId(),US.getName());
+              ListFriends.addItem(item2);
             }
             if(US.isOnline()){
-                UserState+="-Online";
+                item.nombre+="-Online";
             }else{
-                UserState+="-Offline";
+                item.nombre+="-Offline";
             }
-            ListUsers.addItem(UserState);         
+            ListUsers.addItem(item);         
         }
         
         for(Group Group:this.IdGroups.values()){
@@ -67,8 +70,8 @@ public class ListaVentana extends JFrame {
         }
         
         BUsers.addActionListener(e->{
-            int CurrentIndex=this.ListUsers.getSelectedIndex();
-            Users UserChat=Users.get(CurrentIndex);
+            Item CurrentIndex=(Item) this.ListUsers.getSelectedItem();
+            Users UserChat=this.UserMap.get(CurrentIndex.getId());
             if(UserChat.isFriend() || UserChat.isOnline()){
             ChatDVenatana Chat=new ChatDVenatana(UserChat,this.Out,this.HiloServer);
             Chat.setVisible(true);
@@ -76,7 +79,12 @@ public class ListaVentana extends JFrame {
                 JOptionPane.showMessageDialog(null, "Este Usuario no esta conectado o no son amigos", "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
         });
-        
+        BFriends.addActionListener(e->{
+            Item CurrentIndex=(Item) this.ListFriends.getSelectedItem();
+            Users UserChat=this.UserMap.get(CurrentIndex.getId());
+            ChatDVenatana Chat=new ChatDVenatana(UserChat,this.Out,this.HiloServer);
+            Chat.setVisible(true);
+        });
         BGroups.addActionListener(e->{
             Item CurrentIndex=(Item) this.ListGroups.getSelectedItem();
             Group CurrentGroup=this.IdGroups.get(CurrentIndex.getId());
@@ -151,24 +159,39 @@ public class ListaVentana extends JFrame {
     
     public void UpdateUsers(int User,boolean Op){
         int IndexUser=0;
-        for(int i=0;i<this.Users.size();i++){
-            if(this.Users.get(i).getId()==User){
+        
+        for(int i=0;i<this.ListUsers.getItemCount();i++){
+            Item item =(Item) this.ListUsers.getItemAt(i);
+            if(item.getId()== User){
                 IndexUser=i;
                 break;
             }
         }
-        String NewField=this.Users.get(IndexUser).getName();
+        
+        Item item = new Item(User,this.UserMap.get(User).getName());
         if(Op){
             
-            NewField+="-Online";
+            item.nombre+="-Online";
         }else{
-            NewField+="-Offline";
+            item.nombre+="-Offline";
         }
-        this.Users.get(IndexUser).setOnline(Op);
+        this.UserMap.get(User).setOnline(Op);
         this.ListUsers.removeItemAt(IndexUser);
-        this.ListUsers.insertItemAt(NewField, IndexUser);
+        this.ListUsers.insertItemAt(item, IndexUser);
         this.ListUsers.revalidate();
         this.ListUsers.repaint();
+    }
+    public void UpdateFrined(int id){
+        Users usr=this.UserMap.get(id);
+        usr.setFriend(true);
+        Item item=new Item(usr.getId(),usr.getName());
+        this.ListFriends.addItem(item);
+    }
+    public void newGroup(Group g){
+        this.IdGroups.put(g.getId(), g);
+        Item Item=new Item(g.getId(),g.getName());
+        this.ListGroups.addItem(Item);
+        
     }
     
 }

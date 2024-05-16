@@ -6,6 +6,7 @@ package BD.Controlers;
 
 import BD.Conection;
 import BD.Models.DmModel;
+import BD.Models.Group;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -60,6 +61,27 @@ public class GmControler  extends Conection{
             Logger.getLogger(GmControler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Messages;
+    }
+    public void InsertGroup(Group Group,int id){
+        PreparedStatement ps;
+        try
+        {
+            ps=getCon().prepareStatement("insert into chat_grupal (ID_Grupo,Nombre,Descripcion) values (?,?,?)");
+            ps.setInt(1, Group.getId());
+            ps.setString(2, Group.getName());
+            ps.setString(3, Group.getDescription());
+            ps.executeUpdate();
+            ps=getCon().prepareStatement("insert into grupos (Usuario,Grupo,confirmacion) values (?,?,?)");
+            ps.setInt(1, id);
+            ps.setInt(2, Group.getId());
+            ps.setBoolean(3, true);
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(GmControler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void UpdateUser (int IdUser,int IdGroup){
+        
     }
     
 }
