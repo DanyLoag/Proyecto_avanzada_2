@@ -200,7 +200,7 @@ public class Controler extends Observable implements Observer,Runnable{
                     if(User.ID!=IdUser){
                         OS.writeInt(User.ID);
                         OS.writeUTF(User.Nombre);                        
-                        OS.writeBoolean(this.IdUser.containsKey(User.ID));
+                        OS.writeBoolean(this.UserClient.containsKey(User.ID));
                         if(this.FC.GetFrienShip(User.ID, IdUser)){
                             OS.writeBoolean(true);
                             ArrayList<String> Messages=DmControler.getMessages( IdUser,User.ID);
