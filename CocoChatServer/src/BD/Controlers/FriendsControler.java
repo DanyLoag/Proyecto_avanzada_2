@@ -120,7 +120,4 @@ public class FriendsControler extends Conection {
         }
         return id;
     }
-    
-
-    
 }
