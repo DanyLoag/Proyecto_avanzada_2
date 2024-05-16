@@ -44,7 +44,7 @@ public class PrincipalVentana  extends JFrame implements Observer {
     InvitacionesVentana IV;
     ListaVentana LS;
 
-    public PrincipalVentana(DataInputStream IN,DataOutputStream OUT,ArrayList<Users> User,HiloServidor HiloServidor, int IdUser,HashMap<Integer,Users> UserMap,ArrayList<Group> Groups,    HashMap<Integer,Group> IdGroups) {
+    public PrincipalVentana(DataInputStream IN,DataOutputStream OUT,ArrayList<Users> User,HiloServidor HiloServidor, int IdUser,HashMap<Integer,Users> UserMap,ArrayList<Group> Groups,    HashMap<Integer,Group> IdGroups,  HashMap<Integer,Invitaciones> AmigosPendientes,HashMap<Integer,Invitaciones> GruposPendientes) {
         super("Menu");
         this.UserMap=UserMap;
         this.HiloServer=HiloServidor;
@@ -60,8 +60,7 @@ public class PrincipalVentana  extends JFrame implements Observer {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         GroupLayout orden = new GroupLayout(this.getContentPane());
         LS=new ListaVentana(Out,Users,this.IdUser,this.HiloServer,this.UserMap,this.Groups,this.IdGroups);
-        ArrayList<Invitaciones> Invs=new ArrayList<Invitaciones>();
-        IV=new InvitacionesVentana(Invs,this.UserMap);
+        IV=new InvitacionesVentana(GruposPendientes,AmigosPendientes,this.Out,this.LS,this.IdGroups,this.UserMap);
         Salir.addActionListener(e->{
             try
             {
@@ -143,10 +142,18 @@ public class PrincipalVentana  extends JFrame implements Observer {
             String fullmsg=tempUser.getName()+": "+MSG.Content;
             tempUser.AddMessage(fullmsg);
         }
-        
+        case 2->{
+            
+        }
+        case 3->{
+            LS.UpdateFrined(MSG.Origin);
+        }
+        case 4->{
+            this.IV.addFriendship(MSG.Origin,MSG.IdFriendShip);
+        }
+        case 8->{
+            LS.newGroup(MSG.group);
+        }
+      }
     }
-    }
-    
-    
-    
 }

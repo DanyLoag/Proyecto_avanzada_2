@@ -10,7 +10,10 @@ package Models;
  */
 public class Item {
     private int id;
-    private String nombre;
+    public String nombre;
+
+    public Item() {
+    }
 
     public Item(int id, String nombre) {
         this.id = id;

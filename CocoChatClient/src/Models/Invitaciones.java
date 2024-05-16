@@ -23,6 +23,15 @@ public class Invitaciones {
         this.Name=Name;
     }
 
+    public Invitaciones(int ID, int User1, String Name) {
+        this.ID = ID;
+        this.User1 = User1;
+        this.Name = Name;
+        this.confirmed=false;
+    }
+    
+    
+
     public String getName() {
         return Name;
     }

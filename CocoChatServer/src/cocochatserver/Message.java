@@ -4,6 +4,7 @@
  */
 package cocochatserver;
 
+import BD.Models.Group;
 import java.util.ArrayList;
 
 /**
@@ -16,6 +17,10 @@ public class Message {// esta clase nos sirve para comunicar mas facil entre tod
     public ArrayList<String> Content;
     public int Origin;
     public int Addressee;
+    public boolean accepted;
+    public int UserFriendId;
+    public Group group;
+    public ArrayList<Integer> Users;
     public Message(int Option, ArrayList<String> Content,int Adresee,int Origin) {
         this.Option = Option;
         this.Content = Content;
@@ -23,10 +28,25 @@ public class Message {// esta clase nos sirve para comunicar mas facil entre tod
         this.Origin=Origin;
     }
 
-    public Message(int Option, int Origin, int Addressee) {
+    public Message(int Option, int Origin, int Addressee,boolean accepted,int UserFriendId) {
+        this.Option = Option;
+        this.Origin = Origin;
+        this.Addressee = Addressee;
+        this.accepted=accepted;
+        this.UserFriendId=UserFriendId;
+    }
+
+    public Message(int Option, int Origin, Group group) {
+        this.Option = Option;
+        this.Origin = Origin;
+        this.group = group;
+    }
+    
+    public Message(int Option, int Origin, int Addressee){
         this.Option = Option;
         this.Origin = Origin;
         this.Addressee = Addressee;
     }
+    
     
 }

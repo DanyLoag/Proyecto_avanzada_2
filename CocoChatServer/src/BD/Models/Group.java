@@ -11,9 +11,9 @@ import java.util.HashMap;
  * @author Jorge
  */
 public class Group {
-    int id;
-    String Name;
-    String Description;
+    public int id;
+    public String Name;
+    public String Description;
     public Group(int id, String Name, String Description) {
         this.id = id;
         this.Name = Name;

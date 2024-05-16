@@ -6,6 +6,7 @@ package cocochatclient;
 
 import Hilos.HiloServidor;
 import Models.Group;
+import Models.Invitaciones;
 import Models.Users;
 import Ventanas.PrincipalVentana;
 import java.io.DataInputStream;
@@ -94,44 +95,31 @@ public class CocoChatClient {
                 Groups.add(Group);
                 IdGroups.put(IdGroup, Group);
             }
-            HiloServidor HiloServidor=new HiloServidor(in);
-            PrincipalVentana Ventana=new PrincipalVentana(in,out,Users,HiloServidor,id,UserMap,Groups,IdGroups);    
-            Ventana.setVisible(true);           
-            /*outerLoop:while(true){
-            System.out.print("Menu:\n[1]EnviarMensaje\n[2]Mensaje Grupo\n[0]Salir");
-            int OP=sn.nextInt();
-            out.writeInt(OP);
-            int Destino;
-            switch(OP){
-                case 1:
-                    System.out.print("Destino: ");
-                    sn=new Scanner (System.in);
-                    Destino=sn.nextInt();
-                    out.writeInt(Destino);    
-                    System.out.print("MSG: ");
-                    sn=new Scanner (System.in);
-                    MSG=sn.nextLine();
-                    out.writeUTF(MSG);
-                    break;
-                case 2:
-                    System.out.print("Grupo: ");
-                    sn=new Scanner (System.in);
-                    Destino=sn.nextInt();
-                    out.writeInt(Destino);    
-                    System.out.print("MSG: ");
-                    sn=new Scanner (System.in);
-                    MSG=sn.nextLine();
-                    out.writeUTF(MSG);
-                    break;
-                case 0:
-                    System.out.println("ConexionTerminada");
-                    break outerLoop;
-                default:
-                    System.out.println("Opcion no valida");
+            
+            int PendingFriends =  in.readInt();
+            HashMap<Integer,Invitaciones> AmigosPendientes=new  HashMap<Integer,Invitaciones>();
+            for(int i=0;i<PendingFriends;i++){
+                int idinv=in.readInt();
+                int user1=in.readInt();
+                String name=UserMap.get(user1).getName();
+                Invitaciones inv=new Invitaciones(idinv,user1,name);
+                AmigosPendientes.put(idinv, inv);
             }
-              
-            }*/
-        
+            
+            int PendingGroups = in.readInt();
+            HashMap<Integer,Invitaciones> GroupPendientes=new  HashMap<Integer,Invitaciones>();
+            for(int i=0;i<PendingGroups;i++){
+                int idinv=in.readInt();
+                String name=in.readUTF();
+                int user1=in.readInt();
+                
+                Invitaciones inv=new Invitaciones(idinv,user1,name);
+                GroupPendientes.put(idinv, inv);
+            }
+            HiloServidor HiloServidor=new HiloServidor(in,UserMap);
+            PrincipalVentana Ventana=new PrincipalVentana(in,out,Users,HiloServidor,id,UserMap,Groups,IdGroups,AmigosPendientes,GroupPendientes);    
+            Ventana.setVisible(true);           
+            
         } catch (IOException ex) {
             Logger.getLogger(CocoChatClient.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -47,6 +47,10 @@ public class Controler extends Observable implements Observer,Runnable{
     this.User=new UserControler();
     this.DmControler=new DmControler();
     this.GMC=new GmControler();
+    ArrayList<UserModel> Users=User.GetUsers();
+    for(UserModel usr:Users){
+        this.IdUser.put(usr.ID, usr);
+    }
     }
     
     /**
@@ -55,7 +59,6 @@ public class Controler extends Observable implements Observer,Runnable{
      * @param Client modelo del usuario
      */
     public void addUser(int Name, HiloCliente Client){
-        IdUser.put(Name, Client.User);
         UserClient.put(Name, Client);
     }
     
@@ -110,14 +113,51 @@ public class Controler extends Observable implements Observer,Runnable{
                 }
             }
             case 3->{
-                /*
-                String Users="";
-                for(String us:this.UserClient.keySet()){
-                    Users+=us+"-";
+                if(MSG.accepted){
+                    FC.updateFriendship(MSG.Addressee);
+                    this.UpdateTXT(IdUser.get(MSG.Origin).Nombre+" acepto amistad de "+IdUser.get(MSG.UserFriendId).Nombre);
+                    if(UserClient.containsKey(MSG.UserFriendId)){
+                        UserClient.get(MSG.UserFriendId).SendMSG(MSG);
+                    }
+                }else{
+                    FC.DeleteFriendship(MSG.Addressee);
+                    this.UpdateTXT(IdUser.get(MSG.Origin).Nombre+" rechazo amistad de "+IdUser.get(MSG.UserFriendId).Nombre);
+                    
                 }
-                String[] ARR={MSG[0],Users};
-                UserClient.get(MSG[1]).SendMSG(ARR);
-                */
+            }
+            case 4->{
+                int id=FC.insertFriendShip(MSG.Origin, MSG.Addressee);
+                this.UpdateTXT(IdUser.get(MSG.Origin).Nombre+" envio solicitud de amistad a  "+IdUser.get(MSG.Addressee).Nombre);
+                if(UserClient.containsKey(MSG.Addressee)){
+                        MSG.UserFriendId=id;
+                }   
+            }
+            case 5->{
+                this.GMC.InsertGroup(MSG.group, MSG.Origin);
+                this.UpdateTXT(IdUser.get(MSG.Origin).Nombre+"creo el grupo "+MSG.group.getName());
+            }
+            case 6->{
+                if(MSG.accepted){
+                    this.GPC.updateGroupRelation(MSG.Addressee);
+                    this.UpdateTXT(IdUser.get(MSG.Origin).Nombre+" se unico al grupo "+GPC.GetGroupName(MSG.UserFriendId));
+                    Message MSG2=MSG;
+                    MSG2.Option=8;
+                    MSG2.Users=GPC.GetUsers(MSG.Origin, MSG.UserFriendId);
+                    MSG2.group=GPC.getOnegroup(MSG.UserFriendId);
+                    MSG2.Content=this.GMC.getMsg(MSG.Origin, MSG.UserFriendId);
+                    UserClient.get(MSG.Origin).SendMSG(MSG2);
+                    MSG.Option=6;
+                    ArrayList<Integer> ID = GPC.GetUsers(MSG.Origin, MSG.UserFriendId);
+                    for(int i:ID){
+                    if(UserClient.containsKey(i)){
+                        UserClient.get(i).SendMSG(MSG);
+                    }
+                }
+                }else{
+                    GPC.deleteGroupRelation(MSG.UserFriendId);
+                     this.UpdateTXT(IdUser.get(MSG.Origin).Nombre+" rechazo el gupo "+GPC.GetGroupName(MSG.UserFriendId));
+                    
+                }
             }
         }
         
@@ -189,6 +229,21 @@ public class Controler extends Observable implements Observer,Runnable{
                     for(String MS:Messages){
                         OS.writeUTF(MS);
                     }
+                }
+                ArrayList<FrienshipModel> Pendingfriends =this.FC.getPendingFrienships(IdUser);
+                OS.writeInt(Pendingfriends.size());
+                for(FrienshipModel Fr:Pendingfriends){
+                    OS.writeInt(Fr.getId());
+                    OS.writeInt(Fr.getUser1());
+                }
+                
+                ArrayList<FrienshipModel> PendingGroups =this.GPC.getPendingFrienships(IdUser);
+                OS.writeInt(PendingGroups.size());
+                for(FrienshipModel Fr:PendingGroups){
+                    OS.writeInt(Fr.getId());
+
+                    OS.writeUTF(this.GPC.GetGroupName(Fr.getUser1()));
+                    OS.writeInt(Fr.getUser1());
                 }
                 for(HiloCliente Client:this.UserClient.values()){
                     if(Client.User.ID!=IdUser){

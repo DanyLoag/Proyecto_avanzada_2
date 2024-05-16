@@ -4,6 +4,7 @@
  */
 package cocochatclient;
 
+import Models.Group;
 import java.util.ArrayList;
 
 /**
@@ -16,6 +17,8 @@ public class Message {
     public String Content;
     public int Origin;
     public int IdGroup;
+    public int IdFriendShip;
+    public Group group;
 
     public Message(int Option, String Content, int Origin, int IdGroup) {
         this.Option = Option;
@@ -27,6 +30,20 @@ public class Message {
         this.Option = Option;
         this.Origin=Origin;
     }
+
+    public Message(int Option, int Origin, int IdFriendShip) {
+        this.Option = Option;
+        this.Origin = Origin;
+        this.IdFriendShip = IdFriendShip;
+    }
+
+    public Message(int Option, Group group) {
+        this.Option = Option;
+        this.group = group;
+    }
+    
+    
+    
 
     public Message(int Option, String Content, int Origin) {
         this.Option = Option;
